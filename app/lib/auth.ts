@@ -1,10 +1,4 @@
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  (typeof window !== "undefined"
-    ? `${window.location.protocol}//${window.location.hostname}${
-        window.location.hostname === "localhost" ? ":5000" : ""
-      }`
-    : "http://localhost:5000");
+export const API_BASE_URL = "https://cms-rbac-server.onrender.com";
 
 const storageKey = "cms-rbac-auth";
 
