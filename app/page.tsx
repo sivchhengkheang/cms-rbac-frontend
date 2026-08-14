@@ -7,7 +7,7 @@ import { getStoredAuth } from "./lib/auth";
 export default function Home() {
   useEffect(() => {
     const auth = getStoredAuth();
-    if (auth?.token) {
+    if (auth?.user) {
       window.location.href = "/dashboard";
     }
   }, []);

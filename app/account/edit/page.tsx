@@ -35,14 +35,13 @@ export default function EditAccountPage() {
     setLoading(true);
 
     try {
-      const token = getStoredAuth()?.token;
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}/api/auth/me`,
         {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ username, password: password || undefined }),
         },
@@ -51,9 +50,10 @@ export default function EditAccountPage() {
       const body = await res.json();
       if (!res.ok) throw new Error(body.message || "Failed to update profile");
 
-      if (body.token) {
+      if (body?.user) {
+        // Server may return updated user; persist only user info locally
         saveAuth({
-          token: body.token,
+          token: null,
           user: { username: body.user.username, role: body.user.role },
         });
       }

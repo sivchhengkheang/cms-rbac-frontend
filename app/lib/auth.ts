@@ -7,7 +7,8 @@ export const API_BASE_URL =
 const storageKey = "cms-rbac-auth";
 
 export type AuthState = {
-  token: string;
+  // token is not stored client-side when using httpOnly cookies
+  token?: string | null;
   user: {
     username: string;
     role: string;
@@ -25,12 +26,15 @@ export function getStoredAuth(): AuthState | null {
 }
 
 export function getToken(): string | null {
-  return getStoredAuth()?.token ?? null;
+  // access tokens are kept in httpOnly cookies; not available to JS
+  return null;
 }
 
 export function saveAuth(auth: AuthState) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(storageKey, JSON.stringify(auth));
+  // only persist non-sensitive user info; do NOT persist tokens
+  const toStore = { token: null, user: auth.user } as AuthState;
+  localStorage.setItem(storageKey, JSON.stringify(toStore));
 }
 
 export function clearAuth() {
@@ -58,11 +62,14 @@ export function decodeJwt(token: string) {
 }
 
 export function getAuthUser() {
-  const token = getToken();
-  if (!token) return null;
-  return decodeJwt(token) as {
-    id: string;
-    username: string;
-    role: string;
-  } | null;
+  const stored = getStoredAuth();
+  return (
+    stored?.user ?? null
+  ) as
+    | {
+        id?: string;
+        username: string;
+        role: string;
+      }
+    | null;
 }

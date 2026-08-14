@@ -70,7 +70,7 @@ export default function DashboardPage() {
         setActiveTab("content");
       }
       const auth = getStoredAuth();
-      if (!auth?.token) {
+      if (!auth?.user) {
         router.replace("/login");
         return;
       }
@@ -79,9 +79,9 @@ export default function DashboardPage() {
       try {
         const resp = (await getCurrentUser()) as any;
         if (resp?.user) {
-          const token = resp.token ?? auth.token;
+          // Server sets httpOnly cookies for tokens; persist only user info locally
           saveAuth({
-            token,
+            token: null,
             user: { username: resp.user.username, role: resp.user.role },
           });
           setUserRole(resp.user.role);

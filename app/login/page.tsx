@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     const auth = getStoredAuth();
-    if (auth?.token) {
+    if (auth?.user) {
       router.replace("/dashboard");
     }
   }, [router]);
@@ -27,10 +27,11 @@ export default function LoginPage() {
 
     try {
       const response = await loginUser({ username, password });
-      if (!response.token || !response.user) {
+      if (!response.user) {
         throw new Error(response.message || "Login failed");
       }
-      saveAuth({ token: response.token, user: response.user });
+      // Server sets httpOnly cookies for tokens; persist only user info locally
+      saveAuth({ token: null, user: response.user });
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
