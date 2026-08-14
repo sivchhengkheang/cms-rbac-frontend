@@ -1,7 +1,7 @@
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   (typeof window !== "undefined"
-    ? `http://${window.location.hostname}:5000`
+    ? `${window.location.protocol}//${window.location.hostname}:5000`
     : "http://localhost:5000");
 
 const storageKey = "cms-rbac-auth";
@@ -63,13 +63,9 @@ export function decodeJwt(token: string) {
 
 export function getAuthUser() {
   const stored = getStoredAuth();
-  return (
-    stored?.user ?? null
-  ) as
-    | {
-        id?: string;
-        username: string;
-        role: string;
-      }
-    | null;
+  return (stored?.user ?? null) as {
+    id?: string;
+    username: string;
+    role: string;
+  } | null;
 }
