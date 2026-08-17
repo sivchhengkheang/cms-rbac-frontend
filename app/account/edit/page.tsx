@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCurrentUser } from "../../lib/api";
-import { clearAuth, getStoredAuth, saveAuth } from "../../lib/auth";
+import { API_BASE_URL, clearAuth, getStoredAuth, saveAuth } from "../../lib/auth";
 
 export default function EditAccountPage() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function EditAccountPage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"}/api/auth/me`,
+        `${API_BASE_URL}/api/auth/me`,
         {
           method: "PUT",
           credentials: "include",
